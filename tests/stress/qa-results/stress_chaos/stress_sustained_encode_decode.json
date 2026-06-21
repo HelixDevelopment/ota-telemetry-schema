@@ -2,8 +2,8 @@
   "errors": 0,
   "events_batch": 20,
   "iterations": 200,
-  "p50_latency": "50.291µs",
-  "p95_latency": "70.167µs",
-  "p99_latency": "706.125µs",
+  "p50_latency": "614.917µs",
+  "p95_latency": "1.408833ms",
+  "p99_latency": "1.821875ms",
   "test": "TestStressSustainedEncodeDecode"
 }
