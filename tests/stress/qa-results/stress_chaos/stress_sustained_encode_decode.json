@@ -1,0 +1,9 @@
+{
+  "errors": 0,
+  "events_batch": 20,
+  "iterations": 200,
+  "p50_latency": "50.291µs",
+  "p95_latency": "70.167µs",
+  "p99_latency": "706.125µs",
+  "test": "TestStressSustainedEncodeDecode"
+}

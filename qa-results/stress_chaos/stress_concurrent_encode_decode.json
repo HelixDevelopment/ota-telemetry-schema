@@ -1,0 +1,13 @@
+{
+  "errors": 0,
+  "events_per_batch": 50,
+  "goroutines": 100,
+  "max_latency": "20.906208ms",
+  "mean_latency": "495.217µs",
+  "min_latency": "93.334µs",
+  "p50_latency": "207.458µs",
+  "p95_latency": "1.238708ms",
+  "p99_latency": "20.906208ms",
+  "successful": 100,
+  "test": "TestStressConcurrentEncodeDecode"
+}

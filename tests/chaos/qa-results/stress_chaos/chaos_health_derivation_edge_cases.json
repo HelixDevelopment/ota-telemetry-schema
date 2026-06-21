@@ -1,0 +1,51 @@
+[
+  {
+    "name": "nil_slice",
+    "total": 0,
+    "terminal": 0,
+    "success_rate": 0,
+    "failure_rate": 0
+  },
+  {
+    "name": "empty_slice",
+    "total": 0,
+    "terminal": 0,
+    "success_rate": 0,
+    "failure_rate": 0
+  },
+  {
+    "name": "single_success",
+    "total": 1,
+    "terminal": 1,
+    "success_rate": 1,
+    "failure_rate": 0
+  },
+  {
+    "name": "single_failure",
+    "total": 1,
+    "terminal": 1,
+    "success_rate": 0,
+    "failure_rate": 1
+  },
+  {
+    "name": "single_non_terminal",
+    "total": 1,
+    "terminal": 0,
+    "success_rate": 0,
+    "failure_rate": 0
+  },
+  {
+    "name": "all_non_terminal",
+    "total": 100,
+    "terminal": 0,
+    "success_rate": 0,
+    "failure_rate": 0
+  },
+  {
+    "name": "large_mixed_1000",
+    "total": 1000,
+    "terminal": 1000,
+    "success_rate": 0.666,
+    "failure_rate": 0.334
+  }
+]

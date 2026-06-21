@@ -1,0 +1,8 @@
+{
+  "all_identical": true,
+  "events_per": 500,
+  "goroutines": 50,
+  "panics": 0,
+  "results": 50,
+  "test": "TestStressConcurrentHealthDerivation"
+}

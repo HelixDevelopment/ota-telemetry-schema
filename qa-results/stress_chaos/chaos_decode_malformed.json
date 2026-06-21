@@ -1,0 +1,79 @@
+[
+  {
+    "name": "truncated_object",
+    "description": "truncated JSON object - incomplete key",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected EOF"
+  },
+  {
+    "name": "truncated_event",
+    "description": "truncated within a nested event",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected EOF"
+  },
+  {
+    "name": "two_documents",
+    "description": "two concatenated valid JSON documents",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected trailing data after batch"
+  },
+  {
+    "name": "unknown_top_level_field",
+    "description": "unknown top-level field (DisallowUnknownFields)",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: unknown field \"extra\""
+  },
+  {
+    "name": "unknown_field_in_report",
+    "description": "unknown field inside an event report",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: unknown field \"bogus\""
+  },
+  {
+    "name": "trailing_garbage",
+    "description": "valid JSON followed by non-JSON trailing data",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected trailing data after batch"
+  },
+  {
+    "name": "array_instead_of_object",
+    "description": "top-level JSON array instead of object",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: cannot unmarshal array into Go value of type otatelemetry.Batch"
+  },
+  {
+    "name": "null_as_empty_batch",
+    "description": "JSON null decodes as empty batch (valid encoding/json)",
+    "decode_failed": false
+  },
+  {
+    "name": "empty_string",
+    "description": "empty input (zero bytes)",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: EOF"
+  },
+  {
+    "name": "whitespace_only",
+    "description": "whitespace with no JSON value",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: EOF"
+  },
+  {
+    "name": "wrong_type_for_events",
+    "description": "events field is a number, not an array",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: cannot unmarshal number into Go struct field Batch.events of type []otatelemetry.Event"
+  },
+  {
+    "name": "malformed_enum",
+    "description": "invalid telemetry event enum value",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: otaprotocol: invalid enum value: TelemetryEvent \"idle\""
+  },
+  {
+    "name": "extra_nested_field",
+    "description": "unknown field at the event envelope level",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: unknown field \"unknown_field\""
+  }
+]

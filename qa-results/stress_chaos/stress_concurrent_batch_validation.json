@@ -1,0 +1,8 @@
+{
+  "all_passed": true,
+  "events_in_batch": 100,
+  "goroutines": 100,
+  "panics": 0,
+  "test": "TestStressConcurrentBatchValidation",
+  "validation_failures": 0
+}

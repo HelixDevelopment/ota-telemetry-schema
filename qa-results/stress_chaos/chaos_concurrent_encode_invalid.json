@@ -1,0 +1,7 @@
+{
+  "goroutines": 30,
+  "invalid_batches": 9,
+  "panics": 0,
+  "rejected": 30,
+  "test": "TestChaosConcurrentEncodeInvalidBatch"
+}

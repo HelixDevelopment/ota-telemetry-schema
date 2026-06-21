@@ -1,0 +1,142 @@
+[
+  {
+    "thresholds": {
+      "success_threshold": 0,
+      "error_threshold": 0
+    },
+    "validate_passed": true,
+    "verdict": "halt"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0,
+      "error_threshold": 1
+    },
+    "validate_passed": true,
+    "verdict": "advance"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 1,
+      "error_threshold": 0
+    },
+    "validate_passed": true,
+    "verdict": "halt"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 1,
+      "error_threshold": 1
+    },
+    "validate_passed": true,
+    "verdict": "hold"
+  },
+  {
+    "thresholds": {
+      "success_threshold": -0,
+      "error_threshold": -0
+    },
+    "validate_passed": true,
+    "verdict": "halt"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": -0.1
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: error_threshold -0.1 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: error_threshold -0.1 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": -0.1,
+      "error_threshold": 0.5
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: success_threshold -0.1 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: success_threshold -0.1 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": 1.5
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: error_threshold 1.5 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: error_threshold 1.5 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 1.5,
+      "error_threshold": 0.5
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: success_threshold 1.5 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: success_threshold 1.5 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": -1e-10,
+      "error_threshold": 0.5
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: success_threshold -1e-10 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: success_threshold -1e-10 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": -1e-10
+    },
+    "validate_passed": false,
+    "validate_error": "otatelemetry: invalid thresholds: error_threshold -1e-10 out of [0,1]",
+    "verdict": "hold",
+    "verdict_error": "otatelemetry: invalid thresholds: error_threshold -1e-10 out of [0,1]"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 5e-324,
+      "error_threshold": 5e-324
+    },
+    "validate_passed": true,
+    "verdict": "halt"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.9999999999,
+      "error_threshold": 1e-10
+    },
+    "validate_passed": true,
+    "verdict": "halt"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": 0.5
+    },
+    "validate_passed": true,
+    "verdict": "advance"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": 0.5
+    },
+    "validate_passed": true,
+    "verdict": "advance"
+  },
+  {
+    "thresholds": {
+      "success_threshold": 0.5,
+      "error_threshold": 0.5
+    },
+    "validate_passed": true,
+    "verdict": "advance"
+  }
+]

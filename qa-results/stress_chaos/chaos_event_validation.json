@@ -1,0 +1,61 @@
+[
+  {
+    "name": "empty_device_id",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: missing required field: device_id"
+  },
+  {
+    "name": "empty_deployment_id",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: missing required field: deployment_id"
+  },
+  {
+    "name": "both_ids_empty",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: missing required field: device_id"
+  },
+  {
+    "name": "invalid_event_type",
+    "valid": false,
+    "error": "otatelemetry: invalid event\ntelemetry event: otaprotocol: invalid enum value: \"bogus\""
+  },
+  {
+    "name": "empty_event_type",
+    "valid": false,
+    "error": "otatelemetry: invalid event\ntelemetry event: otaprotocol: invalid enum value: \"\""
+  },
+  {
+    "name": "progress_negative",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: invalid field value: progress must be 0..100, got -1"
+  },
+  {
+    "name": "progress_above_100",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: invalid field value: progress must be 0..100, got 101"
+  },
+  {
+    "name": "progress_max_int",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: invalid field value: progress must be 0..100, got 9223372036854775807"
+  },
+  {
+    "name": "progress_min_int",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: invalid field value: progress must be 0..100, got -9223372036854775808"
+  },
+  {
+    "name": "zero_timestamp",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: missing required field: timestamp"
+  },
+  {
+    "name": "all_fields_invalid",
+    "valid": false,
+    "error": "otatelemetry: invalid event\notaprotocol: missing required field: device_id"
+  },
+  {
+    "name": "valid_event_control",
+    "valid": true
+  }
+]

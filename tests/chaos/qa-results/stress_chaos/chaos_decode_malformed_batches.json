@@ -1,0 +1,67 @@
+[
+  {
+    "name": "truncated_object",
+    "description": "truncated JSON object",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected EOF"
+  },
+  {
+    "name": "truncated_events_array",
+    "description": "truncated within events array",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected EOF"
+  },
+  {
+    "name": "two_concatenated_docs",
+    "description": "two concatenated valid JSON documents",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected trailing data after batch"
+  },
+  {
+    "name": "trailing_garbage",
+    "description": "valid JSON followed by garbage",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: unexpected trailing data after batch"
+  },
+  {
+    "name": "top_level_array",
+    "description": "top-level JSON array instead of object",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: cannot unmarshal array into Go value of type otatelemetry.Batch"
+  },
+  {
+    "name": "empty_string",
+    "description": "zero-length input",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: EOF"
+  },
+  {
+    "name": "whitespace_only",
+    "description": "whitespace with no JSON value",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: EOF"
+  },
+  {
+    "name": "events_is_number",
+    "description": "events field is a number, not array",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: cannot unmarshal number into Go struct field Batch.events of type []otatelemetry.Event"
+  },
+  {
+    "name": "events_is_string",
+    "description": "events field is a string",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: cannot unmarshal string into Go struct field Batch.events of type []otatelemetry.Event"
+  },
+  {
+    "name": "deeply_nested_unknown",
+    "description": "deeply nested unknown field in report",
+    "decode_failed": true,
+    "error": "otatelemetry: decode failed: json: unknown field \"extra\""
+  },
+  {
+    "name": "huge_cohort_string",
+    "description": "cohort with 10K chars",
+    "decode_failed": false
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "large_10000_events",
+    "total": 10000,
+    "terminal": 10000,
+    "successes": 6666,
+    "failures": 3334,
+    "success_rate": 0.6666,
+    "failure_rate": 0.3334,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "zero_terminal_events",
+    "total": 2,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "nil_input",
+    "total": 0,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_download_started",
+    "total": 1,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_installing",
+    "total": 1,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_installed",
+    "total": 1,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_verifying",
+    "total": 1,
+    "terminal": 0,
+    "successes": 0,
+    "failures": 0,
+    "success_rate": 0,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_success",
+    "total": 1,
+    "terminal": 1,
+    "successes": 1,
+    "failures": 0,
+    "success_rate": 1,
+    "failure_rate": 0,
+    "has_nan_or_inf": false
+  },
+  {
+    "name": "single_failure",
+    "total": 1,
+    "terminal": 1,
+    "successes": 0,
+    "failures": 1,
+    "success_rate": 0,
+    "failure_rate": 1,
+    "has_nan_or_inf": false
+  }
+]
