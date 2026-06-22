@@ -501,7 +501,7 @@ func TestChaosHealthDerivationEdgeCases(t *testing.T) {
 			events: repeatEvent(report("d1", "dep1", EventFailure), 100),
 		},
 		{
-			name:   "mixed_deployments",
+			name: "mixed_deployments",
 			events: []Event{
 				{Report: report("d1", "dep1", EventSuccess), Cohort: "c1"},
 				{Report: report("d2", "dep2", EventSuccess), Cohort: "c2"},
@@ -509,7 +509,7 @@ func TestChaosHealthDerivationEdgeCases(t *testing.T) {
 			},
 		},
 		{
-			name:   "mixed_cohorts_same_deployment",
+			name: "mixed_cohorts_same_deployment",
 			events: []Event{
 				{Report: report("d1", "dep1", EventSuccess), Cohort: "canary"},
 				{Report: report("d2", "dep1", EventSuccess), Cohort: "beta"},
@@ -829,7 +829,7 @@ func TestChaosHealthNumericalStability(t *testing.T) {
 			Failures:    h.Failures,
 			SuccessRate: h.SuccessRate,
 			FailureRate: h.FailureRate,
-			HasNaN:      math.IsNaN(h.SuccessRate) || math.IsNaN(h.FailureRate) ||
+			HasNaN: math.IsNaN(h.SuccessRate) || math.IsNaN(h.FailureRate) ||
 				math.IsInf(h.SuccessRate, 0) || math.IsInf(h.FailureRate, 0),
 		})
 	}

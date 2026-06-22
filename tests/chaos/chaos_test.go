@@ -325,10 +325,10 @@ func TestChaosHealthThresholdBoundaries(t *testing.T) {
 
 	type entry struct {
 		Thresholds    otatelemetry.HealthThresholds `json:"thresholds"`
-		Valid         bool                         `json:"validate_passed"`
-		ValidateError string                       `json:"validate_error,omitempty"`
-		Verdict       string                       `json:"verdict"`
-		VerdictError  string                       `json:"verdict_error,omitempty"`
+		Valid         bool                          `json:"validate_passed"`
+		ValidateError string                        `json:"validate_error,omitempty"`
+		Verdict       string                        `json:"verdict"`
+		VerdictError  string                        `json:"verdict_error,omitempty"`
 	}
 
 	boundaries := []otatelemetry.HealthThresholds{

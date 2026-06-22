@@ -1,9 +1,0 @@
-{
-  "errors": 0,
-  "events_per": 10,
-  "goroutines": 100,
-  "p50_latency": "242.334µs",
-  "p95_latency": "10.30225ms",
-  "p99_latency": "15.676459ms",
-  "test": "TestStressConcurrentEncode"
-}

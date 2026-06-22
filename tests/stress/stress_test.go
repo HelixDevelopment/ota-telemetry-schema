@@ -89,8 +89,8 @@ func TestStressSustainedEncodeDecode(t *testing.T) {
 	}
 
 	const (
-		iterations      = 200
-		eventsPerBatch  = 20
+		iterations     = 200
+		eventsPerBatch = 20
 	)
 
 	rng := rand.New(rand.NewSource(42))
@@ -279,11 +279,11 @@ func TestStressConcurrentHealthDerivation(t *testing.T) {
 	}
 
 	summary := map[string]interface{}{
-		"test":          "TestStressConcurrentHealthDerivation",
-		"goroutines":    goroutines,
-		"events_per":    eventsPer,
-		"panics":        panics,
-		"results":       len(results),
+		"test":       "TestStressConcurrentHealthDerivation",
+		"goroutines": goroutines,
+		"events_per": eventsPer,
+		"panics":     panics,
+		"results":    len(results),
 		"all_identical": len(results) > 0 && func() bool {
 			for i := 1; i < len(results); i++ {
 				if results[i].Total != results[0].Total {
@@ -323,10 +323,10 @@ func TestStressMixedHealthVerdict(t *testing.T) {
 	failureRatios := []float64{0.0, 0.05, 0.1, 0.15, 0.2, 0.5, 1.0}
 
 	type entry struct {
-		FailureRatio float64                    `json:"failure_ratio"`
+		FailureRatio float64                       `json:"failure_ratio"`
 		Thresholds   otatelemetry.HealthThresholds `json:"thresholds"`
-		Verdict      string                     `json:"verdict"`
-		Error        string                     `json:"error,omitempty"`
+		Verdict      string                        `json:"verdict"`
+		Error        string                        `json:"error,omitempty"`
 	}
 
 	var results []entry
