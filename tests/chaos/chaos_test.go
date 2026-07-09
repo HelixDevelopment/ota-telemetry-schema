@@ -343,6 +343,12 @@ func TestChaosHealthThresholdBoundaries(t *testing.T) {
 		{SuccessThreshold: math.SmallestNonzeroFloat64, ErrorThreshold: math.SmallestNonzeroFloat64},
 		{SuccessThreshold: 0.9999999999, ErrorThreshold: 0.0000000001},
 		{SuccessThreshold: 0.5, ErrorThreshold: 0.5},
+		// NaN: comparisons with NaN always evaluate false, so a naive
+		// `< 0 || > 1` range check silently accepts it unless checked
+		// explicitly (regression coverage for the Validate() NaN fix).
+		{SuccessThreshold: math.NaN(), ErrorThreshold: 0.1},
+		{SuccessThreshold: 0.9, ErrorThreshold: math.NaN()},
+		{SuccessThreshold: math.NaN(), ErrorThreshold: math.NaN()},
 	}
 
 	h := otatelemetry.Health{Terminal: 10, Successes: 9, Failures: 1}
@@ -359,6 +365,19 @@ func TestChaosHealthThresholdBoundaries(t *testing.T) {
 			validErr := thr.Validate()
 			valid := validErr == nil
 			v, vErr := h.Verdict(thr)
+
+			// Regression guard: a NaN threshold must never validate as
+			// "valid" nor let Verdict() silently pick a verdict without
+			// surfacing the invalid-thresholds error.
+			if math.IsNaN(thr.SuccessThreshold) || math.IsNaN(thr.ErrorThreshold) {
+				if valid {
+					t.Errorf("NaN threshold %+v validated as valid, want ErrInvalidThresholds", thr)
+				}
+				if vErr == nil {
+					t.Errorf("NaN threshold %+v: Verdict() returned nil error, want ErrInvalidThresholds", thr)
+				}
+			}
+
 			results = append(results, entry{
 				Thresholds:    thr,
 				Valid:         valid,

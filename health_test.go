@@ -132,6 +132,58 @@ func TestHealthThresholdsValidate(t *testing.T) {
 	}
 }
 
+// TestHealthThresholdsValidateRejectsNaN reproduces a real defect: NaN
+// comparisons in Go always evaluate false (NaN < 0, NaN > 1, NaN == 0 are all
+// false), so HealthThresholds.Validate()'s naive `< 0 || > 1` range checks
+// silently accept a NaN threshold as "valid" instead of rejecting it as
+// malformed. A NaN fraction is never a valid [0,1] value and must be caught
+// here — this is the module's schema-validation boundary for thresholds.
+func TestHealthThresholdsValidateRejectsNaN(t *testing.T) {
+	tests := []struct {
+		name string
+		t    HealthThresholds
+	}{
+		{"NaN success_threshold", HealthThresholds{SuccessThreshold: math.NaN(), ErrorThreshold: 0.1}},
+		{"NaN error_threshold", HealthThresholds{SuccessThreshold: 0.9, ErrorThreshold: math.NaN()}},
+		{"NaN both", HealthThresholds{SuccessThreshold: math.NaN(), ErrorThreshold: math.NaN()}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.t.Validate()
+			if err == nil {
+				t.Fatalf("Validate() = nil for NaN threshold %+v, want ErrInvalidThresholds (NaN is not a valid [0,1] fraction and must not silently pass)", tc.t)
+			}
+			if !errors.Is(err, ErrInvalidThresholds) {
+				t.Errorf("error %v not matched by ErrInvalidThresholds", err)
+			}
+		})
+	}
+}
+
+// TestVerdictSafetyUnderNaNErrorThreshold proves the safety-invariant
+// consequence of the NaN-acceptance defect: with a NaN error_threshold that
+// Validate() wrongly let through, Verdict() must still refuse to declare a
+// non-halt outcome for a catastrophic (100%) failure rate. Root-cause fix is
+// in HealthThresholds.Validate(): once it rejects NaN, Verdict()'s existing
+// "return VerdictHold, err on invalid thresholds" path is exercised and the
+// safety invariant is preserved (never silently ADVANCE/hold-without-error
+// through a malformed threshold on a catastrophic failure rate).
+func TestVerdictSafetyUnderNaNErrorThreshold(t *testing.T) {
+	h := Health{Terminal: 10, Successes: 0, Failures: 10, SuccessRate: 0, FailureRate: 1.0}
+	thr := HealthThresholds{SuccessThreshold: 0.9, ErrorThreshold: math.NaN()}
+
+	v, err := h.Verdict(thr)
+	if err == nil {
+		t.Fatalf("Verdict() with NaN error_threshold at 100%% failure rate returned nil error (verdict=%q) — a malformed threshold must be rejected, not silently evaluated", v)
+	}
+	if !errors.Is(err, ErrInvalidThresholds) {
+		t.Errorf("error %v not matched by ErrInvalidThresholds", err)
+	}
+	if v != VerdictHold {
+		t.Errorf("Verdict() = %q on invalid-thresholds error path, want VerdictHold (the documented safe default)", v)
+	}
+}
+
 func TestHealthVerdict(t *testing.T) {
 	tests := []struct {
 		name    string

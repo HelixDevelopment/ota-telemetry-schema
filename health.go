@@ -2,6 +2,7 @@ package otatelemetry
 
 import (
 	"fmt"
+	"math"
 
 	otaprotocol "github.com/HelixDevelopment/ota-protocol"
 )
@@ -40,9 +41,23 @@ type HealthThresholds struct {
 }
 
 // Validate reports whether both thresholds are fractions within [0,1].
+//
+// NaN is checked explicitly and first: Go float comparisons with NaN (<, >,
+// ==) always evaluate false, so a bare `< 0 || > 1` range check silently
+// accepts a NaN threshold as "valid" — a real defect class distinct from the
+// already-caught ±Inf case (±Inf trips the range check because Inf > 1 and
+// -Inf < 0 are true). A NaN threshold is never a valid [0,1] fraction and
+// must be rejected here, not allowed to reach Verdict()'s safety-invariant
+// comparisons where it would silently fail to halt/advance either way.
 func (t HealthThresholds) Validate() error {
+	if math.IsNaN(t.SuccessThreshold) {
+		return fmt.Errorf("%w: success_threshold is NaN", ErrInvalidThresholds)
+	}
 	if t.SuccessThreshold < 0 || t.SuccessThreshold > 1 {
 		return fmt.Errorf("%w: success_threshold %v out of [0,1]", ErrInvalidThresholds, t.SuccessThreshold)
+	}
+	if math.IsNaN(t.ErrorThreshold) {
+		return fmt.Errorf("%w: error_threshold is NaN", ErrInvalidThresholds)
 	}
 	if t.ErrorThreshold < 0 || t.ErrorThreshold > 1 {
 		return fmt.Errorf("%w: error_threshold %v out of [0,1]", ErrInvalidThresholds, t.ErrorThreshold)
