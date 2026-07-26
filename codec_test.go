@@ -12,9 +12,9 @@ import (
 
 func sampleBatch() Batch {
 	return Batch{Events: []Event{
-		{Report: report("d1", "dep1", EventDownloadStarted)},
-		{Report: report("d1", "dep1", EventSuccess), Cohort: "canary"},
-		{Report: report("d2", "dep1", EventFailure), ErrorMessage: "boom"},
+		{Report: report("d1", "dep1", EventDownloadStarted), SchemaVersion: CurrentTelemetrySchemaVersion},
+		{Report: report("d1", "dep1", EventSuccess), SchemaVersion: CurrentTelemetrySchemaVersion, Cohort: "canary"},
+		{Report: report("d2", "dep1", EventFailure), SchemaVersion: CurrentTelemetrySchemaVersion, ErrorMessage: "boom"},
 	}}
 }
 
@@ -40,8 +40,8 @@ func TestEncodeDecodeBatchRoundTrip(t *testing.T) {
 
 func TestEncodeBatchRejectsInvalidEvent(t *testing.T) {
 	b := Batch{Events: []Event{
-		{Report: report("d1", "dep1", EventSuccess)},
-		{Report: report("", "dep1", EventSuccess)}, // missing device id
+		{Report: report("d1", "dep1", EventSuccess), SchemaVersion: CurrentTelemetrySchemaVersion},
+		{Report: report("", "dep1", EventSuccess), SchemaVersion: CurrentTelemetrySchemaVersion}, // missing device id
 	}}
 	_, err := EncodeBatch(b)
 	if err == nil {
@@ -79,9 +79,10 @@ func TestDecodeBatchFailures(t *testing.T) {
 		{"wrong type", `{"events": 5}`, ErrDecode},
 		{"unknown field", `{"events": [], "extra": 1}`, ErrDecode},
 		{"trailing data", `{"events": []}{"events": []}`, ErrDecode},
-		{"invalid enum in event", `{"events":[{"report":{"device_id":"d","deployment_id":"dep","event":"idle","progress":0,"timestamp":"2026-06-07T12:00:00Z"}}]}`, otaprotocol.ErrInvalidEnum},
-		{"missing field in event", `{"events":[{"report":{"device_id":"","deployment_id":"dep","event":"success","progress":0,"timestamp":"2026-06-07T12:00:00Z"}}]}`, ErrInvalidEvent},
-		{"progress out of range", `{"events":[{"report":{"device_id":"d","deployment_id":"dep","event":"installing","progress":200,"timestamp":"2026-06-07T12:00:00Z"}}]}`, otaprotocol.ErrInvalidValue},
+		{"unknown schema version", `{"events":[{"schema_version":99,"report":{"device_id":"d","deployment_id":"dep","event":"success","progress":0,"timestamp":"2026-06-07T12:00:00Z"}}]}`, ErrUnknownSchemaVersion},
+		{"invalid enum in event", `{"events":[{"schema_version":1,"report":{"device_id":"d","deployment_id":"dep","event":"idle","progress":0,"timestamp":"2026-06-07T12:00:00Z"}}]}`, otaprotocol.ErrInvalidEnum},
+		{"missing field in event", `{"events":[{"schema_version":1,"report":{"device_id":"","deployment_id":"dep","event":"success","progress":0,"timestamp":"2026-06-07T12:00:00Z"}}]}`, ErrInvalidEvent},
+		{"progress out of range", `{"events":[{"schema_version":1,"report":{"device_id":"d","deployment_id":"dep","event":"installing","progress":200,"timestamp":"2026-06-07T12:00:00Z"}}]}`, otaprotocol.ErrInvalidValue},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -122,7 +123,7 @@ func TestEncodeBatchToWriter(t *testing.T) {
 
 func TestEncodeBatchToInvalid(t *testing.T) {
 	var buf bytes.Buffer
-	bad := Batch{Events: []Event{{Report: report("", "dep", EventSuccess)}}}
+	bad := Batch{Events: []Event{{Report: report("", "dep", EventSuccess), SchemaVersion: CurrentTelemetrySchemaVersion}}}
 	if err := EncodeBatchTo(&buf, bad); !errors.Is(err, ErrEncode) {
 		t.Errorf("EncodeBatchTo(invalid) error = %v, want ErrEncode", err)
 	}

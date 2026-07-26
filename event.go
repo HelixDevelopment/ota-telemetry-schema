@@ -32,6 +32,24 @@ const (
 	EventFailure         = otaprotocol.EventFailure
 )
 
+// CurrentTelemetrySchemaVersion is the single, authoritative schema version for
+// the telemetry envelope. The server rejects any message whose schema_version
+// does not match this value with a 400 error, so old-device messages with a
+// lower version and future-device messages with a higher version are both
+// rejected rather than silently misinterpreted.
+//
+// VERSION-BUMP PROCEDURE:
+//   1. Bump this constant to N+1.
+//   2. Add a second constant OldTelemetrySchemaVersionN = N (the previous value)
+//      so the server can accept BOTH during a migration window.
+//   3. Update Validate() to accept either the current version OR an old version
+//      that is still within the active migration window.
+//   4. Ship the device agent and server atomically or with a version-negotiation
+//      handshake first.
+//   5. Once all devices have migrated, remove the old-version acceptance and the
+//      OldTelemetrySchemaVersionN constant.
+const CurrentTelemetrySchemaVersion = 1
+
 // Event is the telemetry envelope shared by server and agents. It composes the
 // canonical ota-protocol.TelemetryReport (the locked wire fields) with optional
 // shared, transport-free annotations that the health model and dashboard use
@@ -39,6 +57,9 @@ const (
 //
 // The embedded Report carries the authoritative ids (DeviceID, DeploymentID,
 // Event, Progress, ErrorCode, Timestamp). The envelope adds:
+//   - SchemaVersion: the message-schema version for cross-version device↔server
+//     evolution (int, starting at CurrentTelemetrySchemaVersion). The server
+//     rejects any unknown version.
 //   - Cohort: the rollout phase/cohort the device belongs to, so health can be
 //     derived per cohort as well as per deployment (spec §4: "per phase/cohort").
 //   - SystemHealth: the device-reported system_health field (spec §4) used for
@@ -47,10 +68,11 @@ const (
 //
 // The envelope intentionally does not add any transport or storage concerns.
 type Event struct {
-	Report       otaprotocol.TelemetryReport `json:"report"`
-	Cohort       string                      `json:"cohort,omitempty"`
-	SystemHealth string                      `json:"system_health,omitempty"`
-	ErrorMessage string                      `json:"error_message,omitempty"`
+	Report        otaprotocol.TelemetryReport `json:"report"`
+	SchemaVersion int                         `json:"schema_version"`
+	Cohort        string                      `json:"cohort,omitempty"`
+	SystemHealth  string                      `json:"system_health,omitempty"`
+	ErrorMessage  string                      `json:"error_message,omitempty"`
 }
 
 // Sentinel errors. Codec and validation failures wrap one of these so callers
@@ -70,18 +92,64 @@ var (
 	// ErrInvalidThresholds indicates a HealthThresholds value outside [0,1] or
 	// otherwise malformed.
 	ErrInvalidThresholds = errors.New("otatelemetry: invalid thresholds")
+	// ErrUnknownSchemaVersion indicates the message's schema_version does not
+	// match any version the server accepts.
+	ErrUnknownSchemaVersion = errors.New("otatelemetry: unknown schema version")
 )
 
-// NewEvent constructs an envelope from the canonical wire report.
+// NewEvent constructs an envelope from the canonical wire report. SchemaVersion
+// defaults to CurrentTelemetrySchemaVersion; callers that need to decode an
+// older-version event from storage should use NewEventWithVersion.
 func NewEvent(r otaprotocol.TelemetryReport) Event {
-	return Event{Report: r}
+	return Event{Report: r, SchemaVersion: CurrentTelemetrySchemaVersion}
+}
+
+// NewEventWithVersion constructs an envelope with an explicit schema version.
+// This is used when decoding persisted events that carry a version field (e.g.
+// from storage or from a device that reported an older version during a
+// migration window).
+func NewEventWithVersion(r otaprotocol.TelemetryReport, version int) Event {
+	return Event{Report: r, SchemaVersion: version}
 }
 
 // Validate validates the envelope. The embedded report must satisfy the
 // canonical ota-protocol contract; on failure the underlying sentinel is
 // preserved (so errors.Is against otaprotocol.ErrMissingField etc. still works)
 // and ErrInvalidEvent is joined for module-level matching.
+//
+// SchemaVersion is validated: a zero value (legacy payload or test construct
+// without an explicit version) is accepted; any version > Current is rejected.
+// When a negative value or a version beyond Current is encountered,
+// ErrUnknownSchemaVersion is returned so the server can reject it with a 400.
 func (e Event) Validate() error {
+	if e.SchemaVersion < 0 || e.SchemaVersion > CurrentTelemetrySchemaVersion {
+		return ErrUnknownSchemaVersion
+	}
+	return e.ValidateReport()
+}
+
+// ValidateWithAcceptedVersions validates the envelope's report (the canonical
+// ota-protocol contract) while accepting any of the given schema versions plus
+// the current version. This is used during a schema-migration window when both
+// old and new device formats must be accepted.
+func (e Event) ValidateWithAcceptedVersions(accepted ...int) error {
+	valid := e.SchemaVersion == CurrentTelemetrySchemaVersion
+	for _, v := range accepted {
+		if e.SchemaVersion == v {
+			valid = true
+			break
+		}
+	}
+	if !valid {
+		return ErrUnknownSchemaVersion
+	}
+	return e.ValidateReport()
+}
+
+// ValidateReport validates only the embedded ota-protocol report without
+// checking the schema version. This is the shared validation path used by
+// Validate and ValidateWithAcceptedVersions.
+func (e Event) ValidateReport() error {
 	if err := otaprotocol.ValidateTelemetryReport(e.Report); err != nil {
 		return errors.Join(ErrInvalidEvent, err)
 	}

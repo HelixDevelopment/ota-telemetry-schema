@@ -99,9 +99,10 @@ func TestEventValidate(t *testing.T) {
 
 func TestEventAccessors(t *testing.T) {
 	e := Event{
-		Report:       report("dev-9", "dep-9", EventVerifying),
-		Cohort:       "canary",
-		SystemHealth: "ok",
+		Report:        report("dev-9", "dep-9", EventVerifying),
+		SchemaVersion: CurrentTelemetrySchemaVersion,
+		Cohort:        "canary",
+		SystemHealth:  "ok",
 	}
 	if got := e.DeviceID(); got != "dev-9" {
 		t.Errorf("DeviceID() = %q", got)
